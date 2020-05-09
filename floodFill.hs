@@ -1,20 +1,18 @@
 import Data.List
 import Data.Array
 
-
-
-
-
-toSimpleArray :: Array (Int, Int) a -> [[a]]
-toSimpleArray grid = [[grid ! (x, y) | x<-[lowx..highx]] |  y<-[lowy..highy]] 
+-- Format array for printing
+createPrintArray :: Array (Int, Int) a -> [[a]]
+createPrintArray grid = [[grid ! (x, y) | x<-[lowx..highx]] |  y<-[lowy..highy]] 
   where ((lowx, lowy), (highx, highy)) =  bounds grid
 
+-- Format array for input into floodFill algorithm
 createInputArray :: [[a]] -> Array(Int, Int) a
 createInputArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1))  entries  
   where entries = concatMap (\z -> map (\y -> ((fst y, fst z), snd y))  (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) grid
 
-addSpaces :: [Char] -> [Char]
-addSpaces inString = inString ++ replicate (5 - length inString) '.'
+--addSpaces :: [Char] -> [Char]
+--addSpaces inString = inString ++ replicate (5 - length inString) '.' <-- Trying to change output
 
 inBounds :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
 inBounds grid (x, y) = x >= lowx && x <= highx && y >= lowy && y <= highy
@@ -23,8 +21,7 @@ inBounds grid (x, y) = x >= lowx && x <= highx && y >= lowy && y <= highy
 replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
 replace grid point replacement = if inBounds grid point then grid // [(point, replacement)] else grid
 
-
-
+-- Array object used everywhere
 grid :: Int -> a -> Array(Int, Int) a
 grid size value = array ((0,0),(size-1,size-1)) [((x,y),value) | x<-[0..size-1], y<-[0..size-1]]
 
@@ -40,7 +37,7 @@ floodFill grid point@(x, y) target replacement =
           gridNorth = floodFill gridSouth (x, y-1) target replacement
 		  
 printGrid :: Show a => Array (Int, Int) a ->  IO [()]
-printGrid =  mapM (putStrLn . intercalate " " . map show) . toSimpleArray
+printGrid =  mapM (putStrLn . intercalate " " . map show) . createPrintArray
 
 main = do
 	printGrid $ floodFill (createInputArray [["White", "White", "White", "Blue", "Blue"], ["Blue", "White", "Blue", "Blue", "Blue"], ["Blue", "Blue", "Blue", "Green", "Green"], ["Green", "Red", "Blue", "Black", "Black"], ["Blue", "Blue", "Blue", "Green", "Blue"]]) (1,2) "Blue" "Red"
