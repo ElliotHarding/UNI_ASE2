@@ -18,14 +18,14 @@ toComplexArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1))
 addSpaces :: [Char] -> [Char]
 addSpaces inString = inString ++ replicate (5 - length inString) '.'
 
-inBounds :: Array (Int, Int) String -> (Int, Int) -> Bool
+inBounds :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
 inBounds grid (x, y) = x >= lowx && x <= highx && y >= lowy && y <= highy
   where ((lowx, lowy), (highx, highy)) =  bounds grid
 
-replace :: Array (Int, Int) String -> (Int, Int) -> String -> Array (Int, Int) String
+replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
 replace grid point replacement = if inBounds grid point then grid // [(point, replacement)] else grid
 
-floodFill :: Array (Int, Int) String ->  (Int, Int) -> String -> String -> Array (Int, Int) String
+floodFill :: Array (Int, Int) [Char] ->  (Int, Int) -> [Char] -> [Char] -> Array (Int, Int) [Char]
 floodFill grid point@(x, y) target replacement =
   if((not $ inBounds grid point) ||  grid ! (x,y) /= target) then grid 
   else 
