@@ -16,3 +16,4 @@ make2dRange x1 y1 x2 y2 = range ((x1,y1),(x2,y2))
 printArray :: ( Array (Int,Int) Int ) -> String
 printArray arr =
 	unlines [unwords [show (arr ! (x, y)) | x <- [0..5]] | y <- [0..5]]
+	
