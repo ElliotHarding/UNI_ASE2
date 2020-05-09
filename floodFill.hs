@@ -14,12 +14,15 @@ createInputArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1
 --addSpaces :: [Char] -> [Char]
 --addSpaces inString = inString ++ replicate (5 - length inString) '.' <-- Trying to change output
 
-inBounds :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
-inBounds grid (x, y) = x >= lowx && x <= highx && y >= lowy && y <= highy
-  where ((lowx, lowy), (highx, highy)) =  bounds grid
+--isInsideArray :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
+--isInsideArray grid (xPos, yPos) = xPos >= lowx && xPos <= highx && yPos >= lowy && yPos <= highy
+  --where ((lowx, lowy), (highx, highy)) =  bounds grid
+  
+isInsideArray :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
+isInsideArray grid (xPos, yPos) = xPos > -1 && yPos > -1 && xPos < (fst (bounds grid) + 1) && yPos < snd (bounds grid) + 1
 
 replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
-replace grid location newColor = if inBounds grid location then grid // [(location, newColor)] else grid
+replace grid location newColor = if isInsideArray grid location then grid // [(location, newColor)] else grid
 
 -- Array object used everywhere
 grid :: Int -> a -> Array(Int, Int) a
@@ -30,7 +33,7 @@ floodFill colorArray floodSourcePoint@(xPos, yPos) oldCol newCol =
   -- Check if position of floodSourcePoint is actually in the bounds of the colorArray,
   -- or if the color to be replaced is not the old color
   -- if so exit function since we've gone enough
-  if((not(inBounds colorArray floodSourcePoint)) ||  colorArray ! (xPos,yPos) /= oldCol) then colorArray 
+  if((not(isInsideArray colorArray floodSourcePoint)) ||  colorArray ! (xPos,yPos) /= oldCol) then colorArray 
   
   -- Otherwise we need to check all four directions with the floodFill function
   else 
