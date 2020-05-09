@@ -6,7 +6,7 @@ createPrintArray :: Array (Int, Int) a -> [[a]]
 createPrintArray grid = [[grid ! (x, y) | x<-[lowx..highx]] |  y<-[lowy..highy]] 
   where ((lowx, lowy), (highx, highy)) =  bounds grid
 
--- Format array for input into floodFill algorithm
+-- Format array for input into floodFilling algorithm
 createInputArray :: [[a]] -> Array(Int, Int) a
 createInputArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1))  entries  
   where entries = concatMap (\z -> map (\y -> ((fst y, fst z), snd y))  (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) grid
@@ -19,23 +19,28 @@ inBounds grid (x, y) = x >= lowx && x <= highx && y >= lowy && y <= highy
   where ((lowx, lowy), (highx, highy)) =  bounds grid
 
 replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
-replace grid point replacement = if inBounds grid point then grid // [(point, replacement)] else grid
+replace grid location newColor = if inBounds grid location then grid // [(location, newColor)] else grid
 
 -- Array object used everywhere
 grid :: Int -> a -> Array(Int, Int) a
 grid size value = array ((0,0),(size-1,size-1)) [((x,y),value) | x<-[0..size-1], y<-[0..size-1]]
 
 floodFill :: Array (Int, Int) [Char] ->  (Int, Int) -> [Char] -> [Char] -> Array (Int, Int) [Char]
-floodFill grid point@(x, y) target replacement =
-  if((not $ inBounds grid point) ||  grid ! (x,y) /= target) then grid 
+floodFill colorArray floodSourcePoint@(xPos, yPos) oldCol newCol =
+  -- Check if position of floodSourcePoint is actually in the bounds of the colorArray,
+  -- or if the color to be replaced is not the old color
+  -- if so exit function since we've gone enough
+  if((not(inBounds colorArray floodSourcePoint)) ||  colorArray ! (xPos,yPos) /= oldCol) then colorArray 
+  
+  -- Otherwise we need to check all four directions with the floodFill function
   else 
-    gridNorth
-    where grid' = replace grid point replacement
-          gridEast = floodFill grid' (x+1, y) target replacement
-          gridWest = floodFill gridEast (x-1, y) target replacement
-          gridSouth = floodFill gridWest (x, y+1) target replacement
-          gridNorth = floodFill gridSouth (x, y-1) target replacement
-		  
+    upColorArray
+    where colorArray' = replace colorArray floodSourcePoint newCol
+          rightColorArray = floodFill colorArray' (xPos+1, yPos) oldCol newCol
+          leftColorArray = floodFill rightColorArray (xPos-1, yPos) oldCol newCol
+          downColorArray = floodFill leftColorArray (xPos, yPos+1) oldCol newCol
+          upColorArray = floodFill downColorArray (xPos, yPos-1) oldCol newCol
+
 printGrid :: Show a => Array (Int, Int) a ->  IO [()]
 printGrid =  mapM (putStrLn . intercalate " " . map show) . createPrintArray
 
