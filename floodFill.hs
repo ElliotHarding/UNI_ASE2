@@ -11,24 +11,15 @@ createInputArray :: [[a]] -> Array(Int, Int) a
 createInputArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1))  entries  
   where entries = concatMap (\z -> map (\y -> ((fst y, fst z), snd y))  (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) grid
 
---addSpaces :: [Char] -> [Char]
---addSpaces inString = inString ++ replicate (5 - length inString) '.' <-- Trying to change output
-
---isInsideArray :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
---isInsideArray grid (xPos, yPos) = xPos >= lowx && xPos <= highx && yPos >= lowy && yPos <= highy
-  --where ((lowx, lowy), (highx, highy)) =  bounds grid
-  
-
+-- Check input x and y location point is will be in array
 isInsideArray :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
 isInsideArray colourArray (xPos, yPos) = xPos > -1 && yPos > -1 && xPos <= maxX && yPos <= maxY
-	where ((minx, miny), (maxX, maxY)) = bounds colourArray -- Get the bounds on the input colourArray and check them against xPos and yPos in above statement
+	-- Get the bounds of colourArray and check them against xPos and yPos in above statement (using where)
+	-- bounds function returns bounds of colourArray
+	where ((minx, miny), (maxX, maxY)) = bounds colourArray 
 
 replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
-replace grid location newColor = if isInsideArray grid location then grid // [(location, newColor)] else grid
-
--- Array object used everywhere
-grid :: Int -> a -> Array(Int, Int) a
-grid size value = array ((0,0),(size-1,size-1)) [((x,y),value) | x<-[0..size-1], y<-[0..size-1]]
+replace colourArray location newColor = if isInsideArray colourArray location then colourArray // [(location, newColor)] else colourArray
 
 floodFill :: Array (Int, Int) [Char] ->  (Int, Int) -> [Char] -> [Char] -> Array (Int, Int) [Char]
 floodFill colorArray floodSourcePoint@(xPos, yPos) oldCol newCol =
