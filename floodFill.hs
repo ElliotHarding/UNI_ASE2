@@ -57,6 +57,3 @@ runAlgorithmPrint inArray posX posY oldCol newCol = do
 runAlgorithm :: [[Char]] -> Int -> Int -> Char -> Char -> [[Char]]
 runAlgorithm inArray posX posY oldCol newCol = do
 	createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
-
---main = do
-	--runAlgorithmPrint [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
