@@ -18,8 +18,10 @@ createInputArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1
 --isInsideArray grid (xPos, yPos) = xPos >= lowx && xPos <= highx && yPos >= lowy && yPos <= highy
   --where ((lowx, lowy), (highx, highy)) =  bounds grid
   
+
 isInsideArray :: Array (Int, Int) [Char] -> (Int, Int) -> Bool
-isInsideArray grid (xPos, yPos) = xPos > -1 && yPos > -1 && xPos < (fst (bounds grid) + 1) && yPos < snd (bounds grid) + 1
+isInsideArray colourArray (xPos, yPos) = xPos > -1 && yPos > -1 && xPos <= maxX && yPos <= maxY
+	where ((minx, miny), (maxX, maxY)) = bounds colourArray -- Get the bounds on the input colourArray and check them against xPos and yPos in above statement
 
 replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
 replace grid location newColor = if isInsideArray grid location then grid // [(location, newColor)] else grid
