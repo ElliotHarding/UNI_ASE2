@@ -30,7 +30,7 @@ floodFill colorArray (xPos, yPos) oldCol newCol =
   -- if so exit function since we've gone enough
   if((not(isInsideArray colorArray (xPos,yPos))) ||  colorArray ! (xPos,yPos) /= oldCol) then
 	colorArray 
-  
+
   -- Otherwise we need replace current location and to check all four directions with the floodFill function
   else 
     upColorArray
@@ -39,23 +39,18 @@ floodFill colorArray (xPos, yPos) oldCol newCol =
           leftColorArray = floodFill rightColorArray (xPos-1, yPos) oldCol newCol
           downColorArray = floodFill leftColorArray (xPos, yPos+1) oldCol newCol
           upColorArray = floodFill downColorArray (xPos, yPos-1) oldCol newCol
-		  
+
 -- Format array for printing
 -- Shed the position data of the 2d like array so just left with letters of colors
 createPrintArray :: Array (Int, Int) a -> [[a]]
 createPrintArray colArray = [[colArray ! (x, y) | x<-[minX..maxX]] | y<-[minY..maxY]] 
   where ((minX, minY), (maxX, maxY)) = bounds colArray
 
---runAlgorithm :: [[a]] -> Int -> Int -> IO()
---runAlgorithm inArray posX posY = do
-	--let arr = floodFill (createInputArray inArray) (posX,posY) 'b' 'r'
-	--let outarr = createPrintArray arr
-	--mapM_ putStrLn outarr
+runAlgorithm :: [[Char]] -> Int -> Int -> Char -> Char -> IO()
+runAlgorithm inArray posX posY oldCol newCol = do
+	mapM_ putStrLn $ createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
 
 main = do
-	--runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]
-	--let arr = floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
-	--let outarr = createPrintArray arr
-	--mapM_ putStrLn outarr
-	mapM_ putStrLn $ createPrintArray $ floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
-	--outputColorArray $ floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
+	runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
+	putStrLn " "
+	runAlgorithm [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']] 0 0 'w' 'r'
