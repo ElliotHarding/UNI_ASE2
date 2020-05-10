@@ -46,11 +46,17 @@ createPrintArray :: Array (Int, Int) a -> [[a]]
 createPrintArray colArray = [[colArray ! (x, y) | x<-[minX..maxX]] | y<-[minY..maxY]] 
   where ((minX, minY), (maxX, maxY)) = bounds colArray
 
-runAlgorithm :: [[Char]] -> Int -> Int -> Char -> Char -> IO()
-runAlgorithm inArray posX posY oldCol newCol = do
+--Run the flood fill algorithm and print results, provide map, posX, posY, oldCol, newCol -> outputs to console
+runAlgorithmPrint :: [[Char]] -> Int -> Int -> Char -> Char -> IO()
+runAlgorithmPrint inArray posX posY oldCol newCol = do
 	mapM_ putStrLn $ createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
 
+--Run the flood fill algorithm, provide map, posX, posY, oldCol, newCol -> outputs array of results in char format
+runAlgorithm :: [[Char]] -> Int -> Int -> Char -> Char -> [[Char]]
+runAlgorithm inArray posX posY oldCol newCol = do
+	createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
+
 main = do
-	runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
-	putStrLn " "
-	runAlgorithm [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']] 0 0 'w' 'r'
+	--runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
+	--putStrLn " "
+	mapM_ putStrLn $ runAlgorithm [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']] 0 0 'w' 'r'
