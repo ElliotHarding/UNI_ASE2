@@ -39,7 +39,6 @@ floodFill colorArray (xPos, yPos) oldCol newCol =
           downColorArray = floodFill leftColorArray (xPos, yPos+1) oldCol newCol
           upColorArray = floodFill downColorArray (xPos, yPos-1) oldCol newCol
 		  
-
 -- Printing
 outputColorArray :: Show a => Array (Int, Int) a ->  IO [()]
 outputColorArray =  mapM (putStrLn . intercalate " " . map show) . createPrintArray
@@ -50,4 +49,7 @@ createPrintArray colArray = [[colArray ! (x, y) | x<-[minX..maxX]] | y<-[minY..m
   where ((minX, minY), (maxX, maxY)) = bounds colArray
 
 main = do
-	outputColorArray $ floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
+	let arr = floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
+	let outarr = createPrintArray arr
+	mapM_ putStrLn outarr
+	--outputColorArray $ floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
