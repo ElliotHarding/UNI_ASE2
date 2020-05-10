@@ -1,5 +1,55 @@
 import Test.HUnit
+import Data.List
+import Data.Array
 import FloodFill
+
+-- ----------------------------------
+--	Tests for createInputArray 
+-- ----------------------------------
+
+test_createInputArray_1 :: Test
+test_createInputArray_1 = TestCase
+	(do
+		let arr1 = array ((0,0),(1,1)) [((0,0),'a'),((1,0),'a'),((0,1),'b'),((1,1),'b')]
+		let arr2 = createInputArray [['a', 'a'],['b','b']]
+		assertEqual "test_createInputArray_1" arr1 arr2
+	)
+
+test_createInputArray_2 :: Test
+test_createInputArray_2 = TestCase
+	(do
+		let arr1 = array ((0,0),(1,1)) [((0,0),'b'),((1,0),'b'),((0,1),'a'),((1,1),'a')]
+		let arr2 = createInputArray [['b', 'b'],['a','a']]
+		assertEqual "test_createInputArray_2" arr1 arr2
+	)
+
+test_createInputArray_3 :: Test
+test_createInputArray_3 = TestCase
+	(do
+		let arr1 = array ((0,0),(1,0)) [((0,0),'w'),((1,0),'w')]
+		let arr2 = createInputArray [['w', 'w']]
+		assertEqual "test_createInputArray_3" arr1 arr2
+	)
+
+-- ----------------------------------
+--	Tests for createPrintArray
+-- ----------------------------------
+
+test_createPrintArray_1 :: Test
+test_createPrintArray_1 = TestCase
+	(do 
+	let arr = createInputArray [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']]
+	let createdArr = createPrintArray arr
+	assertEqual "test_createPrintArray_1" createdArr [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']]
+	)
+	
+test_createPrintArray_2 :: Test
+test_createPrintArray_2 = TestCase
+	(do 
+	let arr = createInputArray [['g', 'g'], ['w', 'w']]
+	let createdArr = createPrintArray arr
+	assertEqual "test_createPrintArray_1" createdArr [['g', 'g'], ['w', 'w']]
+	)
 
 -- ----------------------------------
 --	Tests for isInsideArray 
@@ -28,19 +78,6 @@ test_isInsideArray_3 = TestCase
 		let b = isInsideArray arr (4,4)
 		assertBool "test_isInsideArray_3" b
 	)
-	
--- ----------------------------------
---	Tests for createPrintArray
--- ----------------------------------
-	
-test_createPrintArray_1 :: Test
-test_createPrintArray_1 = TestCase
-	(do 
-	let arr = createInputArray [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']]
-	let createdArr = createPrintArray arr
-	assertEqual "test_createPrintArray_1" arr createdArr
-	)
-	
 	
 -- ----------------------------------
 --	Tests for replace
@@ -102,6 +139,6 @@ test_runAlgorithm_3 = TestCase
 	)
 
 tests :: Test
-tests = TestList [TestLabel "test_isInsideArray_1" test_isInsideArray_1, TestLabel "test_isInsideArray_2" test_isInsideArray_2, TestLabel "test_isInsideArray_3" test_isInsideArray_3, TestLabel "test_runAlgorithm_1" test_runAlgorithm_1, TestLabel "test_runAlgorithm_2" test_runAlgorithm_2, TestLabel "test_runAlgorithm_3" test_runAlgorithm_3]
+tests = TestList [TestLabel "test_createInputArray_1" test_createInputArray_1,TestLabel "test_createInputArray_2" test_createInputArray_2,TestLabel "test_createInputArray_3" test_createInputArray_3,TestLabel "test_createPrintArray_1" test_createPrintArray_1,TestLabel "test_createPrintArray_2" test_createPrintArray_2,TestLabel "test_isInsideArray_1" test_isInsideArray_1,TestLabel "test_isInsideArray_2" test_isInsideArray_2,TestLabel "test_isInsideArray_3" test_isInsideArray_3,TestLabel "test_replace_1" test_replace_1,TestLabel "test_replace_2" test_replace_2,TestLabel "test_runAlgorithm_1" test_runAlgorithm_1,TestLabel "test_runAlgorithm_2" test_runAlgorithm_2,TestLabel "test_runAlgorithm_3" test_runAlgorithm_3]
 
 main = runTestTT tests

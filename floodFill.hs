@@ -2,12 +2,6 @@ module FloodFill where
 import Data.List
 import Data.Array
 
--- Format array for input into floodFilling algorithm
--- Creates a 2d like array of (x y positions) and (colors)
-createInputArray :: [[a]] -> Array(Int, Int) a
-createInputArray colorArray = array ((0,0),((length $ colorArray !! 0) - 1,(length colorArray) - 1))  entries  
-  where entries = concatMap (\z -> map (\y -> ((fst y, fst z), snd y)) (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) colorArray
-
 -- Check input x and y location point is will be in array
 isInsideArray :: Array (Int, Int) Char -> (Int, Int) -> Bool
 isInsideArray colorArray (xPos, yPos) = xPos > -1 && yPos > -1 && xPos <= maxX && yPos <= maxY
@@ -40,17 +34,24 @@ floodFill colorArray (xPos, yPos) oldCol newCol =
           leftColorArray = floodFill rightColorArray (xPos-1, yPos) oldCol newCol
           downColorArray = floodFill leftColorArray (xPos, yPos+1) oldCol newCol
           upColorArray = floodFill downColorArray (xPos, yPos-1) oldCol newCol
+		  
+-- Format array for input into floodFilling algorithm
+-- Creates a 2d like array of (x y positions) and (colors)
+createInputArray :: [[a]] -> Array(Int, Int) a
+createInputArray colorArray = array ((0,0),((length $ colorArray !! 0) - 1,(length colorArray) - 1)) inData  
+  where inData = concatMap (\z -> map (\y -> ((fst y, fst z), snd y)) (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) colorArray
 
 -- Format array for printing
 -- Shed the position data of the 2d like array so just left with letters of colors
 createPrintArray :: Array (Int, Int) a -> [[a]]
 createPrintArray colArray = [[colArray ! (x, y) | x<-[minX..maxX]] | y<-[minY..maxY]] 
+-- using bounds vars map the chars of the input array into another array
   where ((minX, minY), (maxX, maxY)) = bounds colArray
 
 --Run the flood fill algorithm and print results, provide map, posX, posY, oldCol, newCol -> outputs to console
 runAlgorithmPrint :: [[Char]] -> Int -> Int -> Char -> Char -> IO()
 runAlgorithmPrint inArray posX posY oldCol newCol = do
-	mapM_ putStrLn $ createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
+	mapM_ putStrLn $ runAlgorithm inArray posX posY oldCol newCol
 
 --Run the flood fill algorithm, provide map, posX, posY, oldCol, newCol -> outputs array of results in char format
 runAlgorithm :: [[Char]] -> Int -> Int -> Char -> Char -> [[Char]]
@@ -58,6 +59,4 @@ runAlgorithm inArray posX posY oldCol newCol = do
 	createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
 
 --main = do
-	--runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
-	--putStrLn " "
-	--mapM_ putStrLn $ runAlgorithm [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']] 0 0 'w' 'r'
+	--runAlgorithmPrint [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
