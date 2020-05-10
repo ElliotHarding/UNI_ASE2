@@ -1,11 +1,6 @@
 import Data.List
 import Data.Array
 
--- Format array for printing
-createPrintArray :: Array (Int, Int) a -> [[a]]
-createPrintArray grid = [[grid ! (x, y) | x<-[lowx..highx]] |  y<-[lowy..highy]] 
-  where ((lowx, lowy), (highx, highy)) =  bounds grid
-
 -- Format array for input into floodFilling algorithm
 createInputArray :: [[a]] -> Array(Int, Int) a
 createInputArray grid = array ((0,0),((length $ grid !! 0) - 1,(length grid) - 1))  entries  
@@ -18,27 +13,41 @@ isInsideArray colourArray (xPos, yPos) = xPos > -1 && yPos > -1 && xPos <= maxX 
 	-- bounds function returns bounds of colourArray
 	where ((minx, miny), (maxX, maxY)) = bounds colourArray 
 
+-- Replace one color for another in given position in colorArray
 replace :: Array (Int, Int) [Char] -> (Int, Int) -> [Char] -> Array (Int, Int) [Char]
-replace colourArray location newColor = if isInsideArray colourArray location then colourArray // [(location, newColor)] else colourArray
+replace colourArray (xPos, yPos) newColor = 
+	if isInsideArray colourArray (xPos, yPos) then 
+		colourArray // [((xPos, yPos), newColor)]
+	else 
+		colourArray
 
+-- FloodFill recursive function
 floodFill :: Array (Int, Int) [Char] ->  (Int, Int) -> [Char] -> [Char] -> Array (Int, Int) [Char]
-floodFill colorArray floodSourcePoint@(xPos, yPos) oldCol newCol =
+floodFill colorArray (xPos, yPos) oldCol newCol =
   -- Check if position of floodSourcePoint is actually in the bounds of the colorArray,
   -- or if the color to be replaced is not the old color
   -- if so exit function since we've gone enough
-  if((not(isInsideArray colorArray floodSourcePoint)) ||  colorArray ! (xPos,yPos) /= oldCol) then colorArray 
+  if((not(isInsideArray colorArray (xPos,yPos))) ||  colorArray ! (xPos,yPos) /= oldCol) then
+	colorArray 
   
   -- Otherwise we need to check all four directions with the floodFill function
   else 
     upColorArray
-    where colorArray' = replace colorArray floodSourcePoint newCol
+    where colorArray' = replace colorArray (xPos,yPos) newCol
           rightColorArray = floodFill colorArray' (xPos+1, yPos) oldCol newCol
           leftColorArray = floodFill rightColorArray (xPos-1, yPos) oldCol newCol
           downColorArray = floodFill leftColorArray (xPos, yPos+1) oldCol newCol
           upColorArray = floodFill downColorArray (xPos, yPos-1) oldCol newCol
-
+		  
+		  
+-- Printing
 printGrid :: Show a => Array (Int, Int) a ->  IO [()]
 printGrid =  mapM (putStrLn . intercalate " " . map show) . createPrintArray
+
+-- Format array for printing
+createPrintArray :: Array (Int, Int) a -> [[a]]
+createPrintArray grid = [[grid ! (x, y) | x<-[lowx..highx]] |  y<-[lowy..highy]] 
+  where ((lowx, lowy), (highx, highy)) =  bounds grid
 
 main = do
 	printGrid $ floodFill (createInputArray [["White", "White", "White", "Blue", "Blue"], ["Blue", "White", "Blue", "Blue", "Blue"], ["Blue", "Blue", "Blue", "Green", "Green"], ["Green", "Red", "Blue", "Black", "Black"], ["Blue", "Blue", "Blue", "Green", "Blue"]]) (1,2) "Blue" "Red"
