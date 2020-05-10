@@ -2,9 +2,10 @@ import Data.List
 import Data.Array
 
 -- Format array for input into floodFilling algorithm
+-- Creates a 2d like array of (x y positions) and (colors)
 createInputArray :: [[a]] -> Array(Int, Int) a
 createInputArray colorArray = array ((0,0),((length $ colorArray !! 0) - 1,(length colorArray) - 1))  entries  
-  where entries = concatMap (\z -> map (\y -> ((fst y, fst z), snd y))  (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) colorArray
+  where entries = concatMap (\z -> map (\y -> ((fst y, fst z), snd y)) (snd z)) $ zip [0..] $ map (\x -> zip [0..] x) colorArray
 
 -- Check input x and y location point is will be in array
 isInsideArray :: Array (Int, Int) Char -> (Int, Int) -> Bool
@@ -39,17 +40,22 @@ floodFill colorArray (xPos, yPos) oldCol newCol =
           downColorArray = floodFill leftColorArray (xPos, yPos+1) oldCol newCol
           upColorArray = floodFill downColorArray (xPos, yPos-1) oldCol newCol
 		  
--- Printing
-outputColorArray :: Show a => Array (Int, Int) a ->  IO [()]
-outputColorArray =  mapM (putStrLn . intercalate " " . map show) . createPrintArray
-
 -- Format array for printing
+-- Shed the position data of the 2d like array so just left with letters of colors
 createPrintArray :: Array (Int, Int) a -> [[a]]
 createPrintArray colArray = [[colArray ! (x, y) | x<-[minX..maxX]] | y<-[minY..maxY]] 
   where ((minX, minY), (maxX, maxY)) = bounds colArray
 
+--runAlgorithm :: [[a]] -> Int -> Int -> IO()
+--runAlgorithm inArray posX posY = do
+	--let arr = floodFill (createInputArray inArray) (posX,posY) 'b' 'r'
+	--let outarr = createPrintArray arr
+	--mapM_ putStrLn outarr
+
 main = do
-	let arr = floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
-	let outarr = createPrintArray arr
-	mapM_ putStrLn outarr
+	--runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]
+	--let arr = floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
+	--let outarr = createPrintArray arr
+	--mapM_ putStrLn outarr
+	mapM_ putStrLn $ createPrintArray $ floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
 	--outputColorArray $ floodFill (createInputArray [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']]) (1,2) 'b' 'r'
