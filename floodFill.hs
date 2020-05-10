@@ -1,3 +1,4 @@
+module FloodFill where
 import Data.List
 import Data.Array
 
@@ -56,7 +57,7 @@ runAlgorithm :: [[Char]] -> Int -> Int -> Char -> Char -> [[Char]]
 runAlgorithm inArray posX posY oldCol newCol = do
 	createPrintArray $ floodFill (createInputArray inArray) (posX,posY) oldCol newCol
 
-main = do
+--main = do
 	--runAlgorithm [['w', 'w', 'w', 'b', 'b'], ['b', 'w', 'b', 'b', 'b'], ['b', 'b', 'b', 'g', 'g'], ['g', 'r', 'b', 'o', 'o'], ['b', 'b', 'b', 'g', 'b']] 1 2 'b' 'r'
 	--putStrLn " "
-	mapM_ putStrLn $ runAlgorithm [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']] 0 0 'w' 'r'
+	--mapM_ putStrLn $ runAlgorithm [['w', 'w', 'w', 'w', 'w'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['g', 'g', 'w', 'g', 'g'], ['w', 'w', 'w', 'w', 'w']] 0 0 'w' 'r'
